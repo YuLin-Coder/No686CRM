@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java1234.dao.ContactDao">
+
+	<resultMap type="Contact" id="ContactResult">
+	    <result property="id" column="id"/>
+		<result property="contactTime" column="contactTime"/>
+		<result property="address" column="address" />
+		<result property="overView" column="overView"/>
+		<association property="customer" column="cusId" select="com.java1234.dao.CustomerDao.findById"></association>
+	</resultMap>
+	
+	<select id="findContact" parameterType="Map" resultMap="ContactResult">
+		select * from t_customer_contact
+		<where>
+			<if test="cusId!=null and cusId!=' ' ">
+				and cusId = #{cusId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getTotalContact" parameterType="Map" resultType="Long">
+		select count(*) from t_customer_contact
+	</select>
+	
+	<insert id="addContact" parameterType="Contact">
+		insert into t_customer_contact values(null,#{customer.id},#{contactTime},#{address},#{overView})
+	</insert>
+	
+	<update id="updateContact" parameterType="Contact">
+		update t_customer_contact set contactTime=#{contactTime},address=#{address},overView=#{overView} where id=#{id}
+	</update>
+	
+	<delete id="deleteContact" parameterType="Integer">
+		delete from t_customer_contact where id=#{id}
+	</delete>
+	
+	<select id="findById" parameterType="Integer" resultType="Contact">
+		select * from t_customer_contact where id=#{id}
+	</select>
+
+</mapper> 

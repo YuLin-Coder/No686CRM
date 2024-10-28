@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java1234.dao.CusDevPlanDao">
+
+	<resultMap type="CusDevPlan" id="CusDevPlanResult">
+		<result property="id" column="id"/>
+		<result property="planItem" column="planItem"/>
+		<result property="planDate" column="planDate" />
+		<result property="exeAffect" column="exeAffect"/>
+		<association property="saleChance" column="saleChanceId" select="com.java1234.dao.SaleChanceDao.findById"></association>
+	</resultMap>
+	
+	<select id="findCusDevPlan" parameterType="Map" resultMap="CusDevPlanResult">
+		select * from t_cus_dev_plan
+		<where>
+			<if test="saleChanceId!=null and saleChanceId!=' ' ">
+				and saleChanceId = #{saleChanceId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getTotalCusDevPlan" parameterType="Map" resultType="Long">
+		select count(*) from t_cus_dev_plan
+	</select>
+	
+	<insert id="addCusDevPlan" parameterType="CusDevPlan">
+		insert into t_cus_dev_plan values(null,#{saleChance.id},#{planItem},#{planDate},#{exeAffect})
+	</insert>
+	
+	<update id="updateCusDevPlan" parameterType="CusDevPlan">
+		update t_cus_dev_plan set planItem=#{planItem},planDate=#{planDate},exeAffect=#{exeAffect} where id=#{id}
+	</update>
+	
+	<delete id="deleteCusDevPlan" parameterType="Integer">
+		delete from t_cus_dev_plan where id=#{id}
+	</delete>
+	
+	<select id="findById" parameterType="Integer" resultType="CusDevPlan">
+		select * from t_cus_dev_plan where id=#{id}
+	</select>
+
+</mapper> 

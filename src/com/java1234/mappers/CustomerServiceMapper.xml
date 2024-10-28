@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java1234.dao.CustomerServiceDao">
+
+	<resultMap type="CustomerService" id="CustomerServiceResult">
+		<result property="id" column="id"/>
+		<result property="serveType" column="serveType"/>
+		<result property="overview" column="overview"/>
+		<result property="customer" column="customer"/>
+		<result property="state" column="state"/>
+		<result property="servicerequest" column="servicerequest"/>
+		<result property="createPeople" column="createPeople"/>
+		<result property="createTime" column="createTime"/>
+		<result property="assigner" column="assigner"/>
+		<result property="assignTime" column="assignTime"/>
+		<result property="serviceProce" column="serviceProce"/>
+		<result property="serviceProcePeople" column="serviceProcePeople"/>
+		<result property="serviceProceTime" column="serviceProceTime"/>
+		<result property="serviceProceResult" column="serviceProceResult"/>
+		<result property="myd" column="myd"/>
+	</resultMap>
+	
+	<select id="findCustomerService" parameterType="Map" resultMap="CustomerServiceResult">
+		select * from t_customer_service
+		<where>
+		    <if test="customer!=null and customer!='' ">
+				and customer like #{customer}
+			</if>
+			<if test="overview!=null and overview!='' ">
+				and overview like #{overview}
+			</if>
+			<if test="serveType!=null and serveType!='' ">
+				and serveType = #{serveType}
+			</if>
+			<if test="state!=null and state!='' ">
+				and state = #{state}
+			</if>
+			<if test="createTimefrom!=null and createTimefrom!='' ">
+				and createTime &gt;= #{createTimefrom}
+			</if>
+			<if test="createTimeto!=null and createTimeto!='' ">
+				and createTime &lt;= #{createTimeto}
+			</if>
+		</where>
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotalCustomerService" parameterType="Map" resultType="Long">
+		select count(*) from t_customer_service
+		<where>
+			 <if test="customer!=null and customer!='' ">
+				and customer like #{customer}
+			</if>
+			<if test="overview!=null and overview!='' ">
+				and overview like #{overview}
+			</if>
+			<if test="serveType!=null and serveType!='' ">
+				and serveType = #{serveType}
+			</if>
+			<if test="state!=null and state!='' ">
+				and state = #{state}
+			</if>
+			<if test="createTimefrom!=null and createTimefrom!='' ">
+				and createTime &gt;= #{createTimefrom}
+			</if>
+			<if test="createTimeto!=null and createTimeto!='' ">
+				and createTime &lt;= #{createTimeto}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="addCustomerService" parameterType="CustomerService">
+		insert into t_customer_service values(null,#{serveType},#{overview},#{customer},#{state},#{servicerequest},#{createPeople},#{createTime},#{assigner},#{assignTime},#{serviceProce},#{serviceProcePeople},#{serviceProceTime},#{serviceProceResult},#{myd})
+	</insert>
+	
+	<update id="updateCustomerService" parameterType="CustomerService">
+		update t_customer_service
+		<set>
+		  <if test="serveType!=null and serveType!='' ">
+				serveType = #{serveType},
+		  </if> 
+		  <if test="overview!=null and overview!='' ">
+				overview = #{overview},
+		  </if> 
+		  <if test="customer!=null and customer!='' ">
+				customer = #{customer},
+		  </if> 
+		  <if test="state!=null and state!='' ">
+				state = #{state},
+		  </if> 
+		  <if test="servicerequest!=null and servicerequest!='' ">
+				servicerequest = #{servicerequest},
+		  </if> 
+		  <if test="createPeople!=null and createPeople!='' ">
+				createPeople = #{createPeople},
+		  </if> 
+		  <if test="createTime!=null  ">
+				createTime = #{createTime},
+		  </if> 
+		  <if test="assigner!=null and assigner!='' ">
+				assigner = #{assigner},
+		  </if> 
+		  <if test="assignTime!=null ">
+				assignTime = #{assignTime},
+		  </if> 
+		  <if test="serviceProce!=null and serviceProce!='' ">
+				serviceProce = #{serviceProce},
+		  </if> 
+		  <if test="serviceProcePeople!=null and serviceProcePeople!='' ">
+				serviceProcePeople = #{serviceProcePeople},
+		  </if> 
+		  <if test="serviceProceTime!=null ">
+				serviceProceTime = #{serviceProceTime},
+		  </if> 
+		  <if test="serviceProceResult!=null and serviceProceResult!='' ">
+				serviceProceResult = #{serviceProceResult},
+		  </if> 
+		  <if test="myd!=null and myd!='' ">
+				myd = #{myd},
+		  </if> 
+		</set>
+		  where id=#{id}
+	</update>
+	
+	
+	<delete id="deleteCustomerService" parameterType="Integer">
+		delete from t_customer_service where id=#{id}
+	</delete>
+
+	<select id="findById" parameterType="Integer" resultMap="CustomerServiceResult">
+		select * from t_customer_service where id=#{id}
+	</select>
+	
+</mapper> 

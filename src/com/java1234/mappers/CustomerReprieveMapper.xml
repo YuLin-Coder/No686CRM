@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java1234.dao.CustomerReprieveDao">
+
+	<resultMap type="CustomerReprieve" id="CustomerReprieveResult">
+	    <result property="id" column="id"/>
+		<result property="measure" column="measure"/>
+		<association property="customerLoss" column="lossId" select="com.java1234.dao.CustomerLossDao.findById"></association>
+	</resultMap>
+	
+	<select id="findCustomerReprieve" parameterType="Map" resultMap="CustomerReprieveResult">
+		select * from t_customer_reprieve
+		<where>
+			<if test="lossId!=null and lossId!=' ' ">
+				and lossId = #{lossId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getTotalCustomerReprieve" parameterType="Map" resultType="Long">
+		select count(*) from t_customer_reprieve
+	</select>
+	
+	<insert id="addCustomerReprieve" parameterType="CustomerReprieve">
+		insert into t_customer_reprieve values(null,#{customerLoss.id},#{measure})
+	</insert>
+	
+	<update id="updateCustomerReprieve" parameterType="CustomerReprieve">
+		update t_customer_reprieve set measure=#{measure} where id=#{id}
+	</update>
+	
+	<delete id="deleteCustomerReprieve" parameterType="Integer">
+		delete from t_customer_reprieve where id=#{id}
+	</delete>
+
+
+</mapper> 

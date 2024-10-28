@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java1234.dao.CustomerDao">
+
+	<resultMap type="Customer" id="CustomerResult">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="area" column="area"/>
+		<result property="cusManager" column="cusManager"/>
+		<result property="level" column="level"/>
+		<result property="myd" column="myd"/>
+		<result property="xyd" column="xyd"/>
+		<result property="address" column="address"/>
+		<result property="postCode" column="postCode"/>
+		<result property="phone" column="phone"/>
+		<result property="fax" column="fax"/>
+		<result property="webSite" column="webSite"/>
+		<result property="yyzzzch" column="yyzzzch"/>
+		<result property="fr" column="fr"/>
+		<result property="zczj" column="zczj"/>
+		<result property="nyye" column="nyye"/>
+		<result property="khyh" column="khyh"/>
+		<result property="khzh" column="khzh"/>
+		<result property="dsdjh" column="dsdjh"/>
+		<result property="gsdjh" column="gsdjh"/>
+	</resultMap>
+	
+	<resultMap type="CustomerGx" id="CustomerGxResult">
+		<result property="name" column="name"/>
+		<result property="gx" column="gx"/>
+	</resultMap>
+	
+	<resultMap type="CustomerGc" id="CustomerGcResult">
+		<result property="customerLevel" column="customerLevel"/>
+		<result property="customerNum" column="customerNum"/>
+	</resultMap>
+	
+	<resultMap type="CustomerFw" id="CustomerFwResult">
+		<result property="serveType" column="serveType"/>
+		<result property="num" column="num"/>
+	</resultMap>
+	
+	<select id="findCustomer" parameterType="Map" resultMap="CustomerResult">
+		select * from t_customer
+		<where>
+		    <if test="khno!=null and khno!='' ">
+				and khno like #{khno}
+			</if>
+			<if test="name!=null and name!='' ">
+				and name like #{name}
+			</if>
+		</where>
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotalCustomer" parameterType="Map" resultType="Long">
+		select count(*) from t_customer
+		<where>
+			<if test="khno!=null and khno!='' ">
+				and khno = #{khno}
+			</if>
+			<if test="name!=null and name!='' ">
+				and name like #{name}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="addCustomer" parameterType="Customer">
+		insert into t_customer values(null,#{khno},#{name},#{area},#{cusManager},#{level},#{myd},#{xyd},#{address},#{postCode},#{phone},#{fax},#{webSite},#{yyzzzch},#{fr},#{zczj},#{nyye},#{khyh},#{khzh},#{dsdjh},#{gsdjh},0)
+	</insert>
+	
+	<update id="updateCustomer" parameterType="Customer">
+		update t_customer set name=#{name},area=#{area},cusManager=#{cusManager},
+								 level=#{level},myd=#{myd},xyd=#{xyd},address=#{address},
+								 postCode=#{postCode},phone=#{phone},fax=#{fax},webSite=#{webSite},yyzzzch=#{yyzzzch},
+								 fr=#{fr},zczj=#{zczj},khyh=#{khyh},khzh=#{khzh},dsdjh=#{dsdjh},gsdjh=#{gsdjh}
+								 where id=#{id}
+	</update>
+	
+	
+	<delete id="deleteCustomer" parameterType="Integer">
+		delete from t_customer where id=#{id}
+	</delete>
+
+	<select id="findById" parameterType="Integer" resultMap="CustomerResult">
+		select * from t_customer where id=#{id}
+	</select>
+	
+	<select id="findLossCustomer" resultMap="CustomerResult">
+		SELECT * FROM t_customer t1 WHERE id NOT IN (SELECT cusId FROM t_customer_order WHERE DATE_ADD(orderDate,INTERVAL 6 MONTH)>NOW()) AND t1.state=0 
+	</select>
+	
+	<select id="findCutomerGx" resultMap="CustomerGxResult" parameterType="Map">
+		SELECT t1.name,SUM(t3.sum) AS gx FROM t_customer t1  
+			LEFT JOIN t_customer_order t2 ON t1.id=t2.cusId
+			LEFT JOIN t_order_details t3 ON t2.id=t3.orderId
+			<if test="name!=null and name!='' ">
+						where t1.name like #{name}
+			</if>
+		    GROUP BY t1.id
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotalCustomerGx" parameterType="Map" resultType="Long">
+		select count(*) from t_customer
+		<where>
+			<if test="name!=null and name!='' ">
+				and name like #{name}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findCustomerGc" resultMap="CustomerGcResult">
+		SELECT LEVEL AS customerLevel ,COUNT(LEVEL) AS customerNum FROM t_customer GROUP BY LEVEL;
+	</select>
+	
+	<select id="findCustomerFw" resultMap="CustomerFwResult">
+		SELECT serveType ,COUNT(serveType) AS num FROM t_customer_service GROUP BY serveType;
+	</select>
+</mapper> 
